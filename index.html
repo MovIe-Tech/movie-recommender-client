@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form class="form" id="form">
+        <label for="input">文章を入力</label>
+        <input type="text" name="input" id="input">
+        <button type="submit" id="submit">送信!</button>
+    </form>
+    <ul class="list">
+        <li id="movie-1"></li>
+        <li id="movie-2"></li>
+        <li id="movie-3"></li>
+        <li id="movie-4"></li>
+        <li id="movie-5"></li>
+    </ul>
+    <form class="evaluation-form" id="evaluation-from">
+        <p>気になる映画はいくつありましたか？</p>
+        <input type="radio" id="hit-1" name="eval" value="1">
+        <label for="hit-1">1つ</label>
+        <input type="radio" id="hit-2" name="eval" value="2">
+        <label for="hit-2">2つ</label>
+        <input type="radio" id="hit-3" name="eval" value="3">
+        <label for="hit-3">3つ</label>
+        <input type="radio" id="hit-4" name="eval" value="4">
+        <label for="hit-4">4つ</label>
+        <input type="radio" id="hit-5" name="eval" value="5">
+        <label for="hit-5">5つ</label>
+        <button type="submit" id="evaluation-form__submit">確定</button>
+    </form>
+</body>
+<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-database.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCbCQsbgZ8sKKxkimanv8Xd55j38q2ph-A",
+    authDomain: "movie-recommender-4119d.firebaseapp.com",
+    databaseURL: "https://movie-recommender-4119d.firebaseio.com",
+    projectId: "movie-recommender-4119d",
+    storageBucket: "movie-recommender-4119d.appspot.com",
+    messagingSenderId: "174959934551",
+    appId: "1:174959934551:web:3e11a038505b1c873bf712",
+    measurementId: "G-RQX640ETHM"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+<script>
+    document.querySelector('#form').addEventListener('submit', event => {
+        const input = document.querySelector('#input').value;
+        fetch("http://118.27.11.253:8888/reply?input="+input, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(movies => {
+                for(let i=1; i<=5; i++) {
+                    document.querySelector('#movie-'+i).textContent = movies[""+i];
+                }
+            })
+            .catch(error => {
+                console.error("エラー", error);
+            });
+        event.preventDefault();
+    });
+</script>
+<script>
+    const db = firebase.database();
+
+    document.querySelector("#evaluation-from").addEventListener('submit', event => {
+        db.ref("/evaluation").push({
+            input: document.querySelector("#input").value,
+            eval: document.querySelector("#evaluation-from").eval.value,
+        })
+        document.querySelector("#evaluation-from").textContent = "フィードバックへのご協力ありがとうございます"
+        event.preventDefault();
+    });
+</script>
+</html>
