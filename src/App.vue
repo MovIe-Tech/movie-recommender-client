@@ -112,8 +112,8 @@
         methods: {
             search() {
                 this.isLoading = true;
-                // fetch("http://118.27.11.253:8888/reply?input=" + this.input, {
-                fetch("http://localhost:18888/reply?input=" + this.input, {
+                fetch("http://118.27.11.253:8888/reply?input=" + this.input, {
+                // fetch("http://localhost:18888/reply?input=" + this.input, {
                     method: 'GET',
                     headers: {
                         Accept: 'application/json',
